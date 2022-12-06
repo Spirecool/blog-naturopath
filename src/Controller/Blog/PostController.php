@@ -3,14 +3,16 @@
 namespace App\Controller\Blog;
 
 use App\Repository\Post\PostRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class PostController extends AbstractController
 {
     #[Route('/blog', name: 'app_post_index', methods: ['GET'])]
-    public function index(PostRepository $postRepository): Response
+    public function index(PostRepository $postRepository, Request $request): Response
     {
         //1ère méthode
         // $posts = $postRepository->findBy(
@@ -19,8 +21,8 @@ class PostController extends AbstractController
         // );
 
         //2nde méthode
-        $posts = $postRepository->findPublished();
-
+        $posts = $postRepository->findPublished($request->query->getInt('page', 1));
+                  
         return $this->render('pages/blog/index.html.twig', [
             'posts' => $posts
         ]);

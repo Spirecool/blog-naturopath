@@ -1,0 +1,33 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+<link rel="stylesheet" href="{{ asset('css/styles.css')}}">
+<header>
+    <a href="/" class="logo">
+        {# <img src="/images/logo3.png" alt="Logo du site" width="60px"> #}
+        <p class="h1 h4">Cha<br>Naturopathe<span>.</span></p>
+    </a>
+    <div class="bx bx-menu" id="menu-icon"></div>
+
+    <ul class="navbarr">
+        <li><a href="/" class="active">Accueil</a></li>
+        {% if app.user %}
+            <li><a href="/admin">Admin</a></li>
+        {% endif %}
+        <li><a href="/blog">Blog</a></li> 
+        <li><a href="/">Contactez-moi</a></li> 
+        
+        {# <li><a href="#" class="cart" ><i class='bx bx-mail-send' ></i></a></li> #}
+        <li><a href="#" class="cart" ><img src="/images/icons/moon.png" id="icon"></a></li> 
+        <li><a href="/login" class="cart" ><i class="fa-regular fa-user" id="icon"></i></a></li>
+         {% if app.user %}
+            <li><a href="/logout" class="cart"><i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+        {% endif %}
+    </ul>
+
+    <div class="top-btn">
+        <a href="#contact">Prendre RDV</a>
+    </div>
+</header>
+<script type="text/javascript" src="{{ asset('js/script.js') }}"></script>

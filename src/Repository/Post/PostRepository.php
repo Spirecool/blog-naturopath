@@ -4,9 +4,12 @@ namespace App\Repository\Post;
 
 use App\Entity\Post\Tag;
 use App\Entity\Post\Post;
-use App\Entity\Post\Category;
 use App\Model\SearchData;
+use App\Entity\Post\Category;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -19,20 +22,29 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class PostRepository extends ServiceEntityRepository
 {
-    public function __construct( ManagerRegistry $registry) 
+    public function __construct( ManagerRegistry $registry, private PaginatorInterface $paginatorInterface) 
     {
         parent::__construct($registry, Post::class);
     }
 
     // Get published posts
-    public function findPublished()
+    public function findPublished(int $page) : PaginationInterface
     {
-        return $this->createQueryBuilder('p')
+        $data = $this->createQueryBuilder('p')
             ->where('p.state LIKE :state')
             ->setParameter('state', '%STATE_PUBLISHED%')
             ->addOrderBy('p.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
+            
+            // Pagination
+            $posts = $this->paginatorInterface->paginate(
+                $data,
+                $page,
+                9
+            );
+
+            return $posts;
 
     }
 }
