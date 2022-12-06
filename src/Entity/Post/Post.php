@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Post;
 
-use App\Repository\PostRepository;
+use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PostRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity('slug', message: 'Ce slug existe déjà !')]
+
 class Post
 {
     const STATES = ['STATE_DRAFT', 'STATE_PUBLISHED'];
@@ -29,10 +33,7 @@ class Post
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     private ?string $content = null;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $state = Post::STATES[0];
-
+    
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
@@ -41,11 +42,22 @@ class Post
     #[Assert\NotNull()]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $state = Post::STATES[0];
+
+    //Lien avec le Thumbnail
+    #[ORM\OneToOne(inversedBy: 'post', targetEntity: Thumbnail::class, cascade: ['persist', 'remove'])]
+    private Thumbnail $thumbnail;
 
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    // Permet de générer automatiquement les slugs lors de la cration des Posts
+    public function prePersist() {
+        $this->slug = (new Slugify())->slugify($this->title);
     }
 
     #[ORM\PreUpdate]
@@ -96,18 +108,7 @@ class Post
         return $this;
     }
 
-    public function getState(): ?string
-    {
-        return $this->state;
-    }
-
-    public function setState(string $state): self
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
+ 
     public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
@@ -128,6 +129,31 @@ class Post
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getThumbnail(): ?Thumbnail
+    {
+        return $this->thumbnail;
+    }
+
+    public function setThumbnail(?Thumbnail $thumbnail): self
+    {
+        $this->thumbnail = $thumbnail;
+
+        return $this;
+    }
+
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }
