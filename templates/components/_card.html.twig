@@ -1,12 +1,14 @@
 
 
-        <div class="card">
-            {% if post.thumbnail %}
-                <img src="{{ vich_uploader_asset(post.thumbnail, 'imageFile') }}" class="card-img-top" alt="{{ post.thumbnail.imageName }}">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ post.title }}</h5>
-                <p class="card-text">{{ post.content|u.truncate(160, '...' ) }}</p>
-                <a href="#" class="btn btn-primary">Lire plus</a>
-            </div>
-        </div>
+     <div class="col-xs-12 col-md-6 col-lg-3">
+					<div class="card">
+						<img class="card-img-top" src="http://placehold.it/250x150" alt="Card image cap">
+						<div class="card-block">
+							<h4 class="card-title">{{ post.title }}</h4>
+							<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer..</p>
+						</div>
+						<div class="card-footer">
+							<small class="text-muted">Last updated 3 mins ago</small>
+						</div>
+					</div>
+				</div>
