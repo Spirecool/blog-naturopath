@@ -55,6 +55,7 @@ class Post
         $this->createdAt = new \DateTimeImmutable();
     }
 
+    #[ORM\PrePersist]
     // Permet de générer automatiquement les slugs lors de la cration des Posts
     public function prePersist() {
         $this->slug = (new Slugify())->slugify($this->title);
