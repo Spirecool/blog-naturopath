@@ -47,7 +47,7 @@ class Post
 
     //Lien avec le Thumbnail
     #[ORM\OneToOne(inversedBy: 'post', targetEntity: Thumbnail::class, cascade: ['persist', 'remove'])]
-    private Thumbnail $thumbnail;
+    private ?Thumbnail $thumbnail = null;
 
     public function __construct()
     {

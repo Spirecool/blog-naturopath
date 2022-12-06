@@ -1,13 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blog{% endblock %}
+{% block title %}Blog
+{% endblock %}
 
 {% block body %}
-    <h1>Mes articles</h1>
-    <p>
-    {% for post in posts %}
-        {{ post.title }} <br>
-    {% endfor %}
-         
-    </p>
+
+	<h1>Mes articles</h1>
+
+	<div class="container d-flex">
+        <div class="row">
+            {% for post in posts %}
+                {# inclus le composant card et uniquement avec des données post #}
+                {% include "components/_card.html.twig" with { post: post} only  %}
+            {% endfor %}
+        </div>
+	</div>
+
 {% endblock %}
