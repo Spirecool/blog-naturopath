@@ -8,7 +8,6 @@ use App\Model\SearchData;
 use App\Entity\Post\Category;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -31,7 +30,6 @@ class PostRepository extends ServiceEntityRepository
     public function findPublished(int $page, ?Category $category = null) : PaginationInterface
     {
         $data = $this->createQueryBuilder('p')
-            ->select('c', 'p')
             ->join('p.categories', 'c')
             ->where('p.state LIKE :state')
             ->setParameter('state', '%STATE_PUBLISHED%')
@@ -40,8 +38,8 @@ class PostRepository extends ServiceEntityRepository
 
             if (isset($category)) {
                 $data = $data
-                ->andWhere('c.id LIKE :category')
-                ->setParameter('category', $category->getId());
+                ->andWhere(':category IN (c)')
+                ->setParameter('category', $category);
             }
 
             $data->getQuery()

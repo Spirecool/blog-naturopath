@@ -1,3 +1,20 @@
+// Hamburger Menu in Responsive
+
+let menu = document.querySelector('#menu-icon');
+let navbar = document.querySelector('.navbarr');
+
+menu.onclick = () => {
+	menu.classList.toggle('bx-x');
+	navbar.classList.toggle('open');
+};
+
+window.onscroll = () => {
+	menu.classList.remove('bx-x');
+	navbar.classList.remove('open');
+};
+
+
+
 // MODAL
 
 $(document).ready(function() {
@@ -16,3 +33,5 @@ $(document).ready(function() {
     $('#once-popup').fadeOut(); 
     });
 });
+
+

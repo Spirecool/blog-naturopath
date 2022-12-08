@@ -1,0 +1,10 @@
+{% if badges %}
+	<div class="badge badge-secondary flex-wrap">
+		{% for badge in badges %}
+            <span class="badge badge-primary bg-dark">
+                <a href="{{ path('app_category_index', {slug: badge.slug}) }}">{{ badge.name }}</a>
+            </span>
+		{% endfor %}
+	</div>
+{% endif %}
+
