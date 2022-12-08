@@ -1,7 +1,7 @@
 <div class="col-xs-12 col-md-6 col-lg-4">
 	<div class="card">
 		{% if post.thumbnail %}
-			<a href="{{ path('post.show', {slug: post.slug}) }}">
+			<a href="{{ path('app_post_show', {slug: post.slug}) }}">
 				<img src="{{ vich_uploader_asset(post.thumbnail, 'imageFile') }}" alt="{{ post.thumbnail.imageName }}" class="card-img-top">
 			</a>
 		{% endif %}
@@ -13,7 +13,7 @@
 		</div>
         
 		<div class="card-footer bg-white">
-            <a href="#" class="btn btn-primary">Lire plus</a>
+            <a href="{{ path('app_post_show', {slug: post.slug}) }}" class="btn btn-primary">Lire plus</a>
 		</div>
 	</div>
 </div>
