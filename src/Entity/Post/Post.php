@@ -42,6 +42,9 @@ class Post
     #[Assert\NotNull()]
     private \DateTimeImmutable $createdAt;
 
+    // #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'posts')]
+    // private Collection $categories;
+
     #[ORM\Column(type: 'string', length: 255)]
     private string $state = Post::STATES[0];
 
@@ -165,4 +168,24 @@ class Post
     }
 
 
+
+    /**
+     * Get the value of categories
+     */ 
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * Set the value of categories
+     *
+     * @return  self
+     */ 
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
 }

@@ -11,7 +11,7 @@ class PostFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create('fr');
+        $faker = Factory::create('fr_FR');
 
         for ($i = 0; $i < 50; $i++) {
             $post = new Post();
