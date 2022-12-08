@@ -6,8 +6,10 @@ use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\Post\PostRepository;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -33,7 +35,7 @@ class Post
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     private ?string $content = null;
-    
+
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
@@ -42,8 +44,8 @@ class Post
     #[Assert\NotNull()]
     private \DateTimeImmutable $createdAt;
 
-    // #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'posts')]
-    // private Collection $categories;
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'posts')]
+    private Collection $categories;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $state = Post::STATES[0];
@@ -56,16 +58,18 @@ class Post
     {
         $this->updatedAt = new \DateTimeImmutable();
         $this->createdAt = new \DateTimeImmutable();
+        $this->categories = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
     // Permet de générer automatiquement les slugs lors de la cration des Posts
-    public function prePersist() {
+    public function prePersist()
+    {
         $this->slug = (new Slugify())->slugify($this->title);
     }
 
     #[ORM\PreUpdate]
-    public function preUpdate() 
+    public function preUpdate()
     {
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -112,7 +116,7 @@ class Post
         return $this;
     }
 
- 
+
     public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
@@ -162,30 +166,31 @@ class Post
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->title;
-    }
 
-
-
-    /**
-     * Get the value of categories
-     */ 
-    public function getCategories()
+    public function getCategories(): collection
     {
         return $this->categories;
     }
 
-    /**
-     * Set the value of categories
-     *
-     * @return  self
-     */ 
-    public function setCategories($categories)
+    public function addCategory(Category $category): self
     {
-        $this->categories = $categories;
-
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->addPost($this);
+        }
         return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $category->removePost($this);
+        }
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->title;
     }
 }
