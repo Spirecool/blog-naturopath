@@ -28,14 +28,24 @@ class PostRepository extends ServiceEntityRepository
     }
 
     // Get published posts
-    public function findPublished(int $page) : PaginationInterface
+    public function findPublished(int $page, ?Category $category = null) : PaginationInterface
     {
         $data = $this->createQueryBuilder('p')
+            ->select('c', 'p')
+            ->join('p.categories', 'c')
             ->where('p.state LIKE :state')
             ->setParameter('state', '%STATE_PUBLISHED%')
-            ->addOrderBy('p.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->addOrderBy('p.createdAt', 'DESC');
+
+
+            if (isset($category)) {
+                $data = $data
+                ->andWhere('c.id LIKE :category')
+                ->setParameter('category', $category->getId());
+            }
+
+            $data->getQuery()
+                ->getResult();
             
             // Pagination
             $posts = $this->paginatorInterface->paginate(

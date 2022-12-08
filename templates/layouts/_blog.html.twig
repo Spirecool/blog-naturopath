@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+	<h1 class="mb-5 text-center">{{ title }}</h1>
+
+	<div class="container">
+		<div class="row">
+			{% for post in posts %}
+				{# inclus le composant card et uniquement avec des données post #}
+				{% include "components/_card.html.twig" with { post: post} only  %}
+			{% endfor %}
+		</div>
+
+		<div class="navigation d-flex justify-content-center my-5 ">
+			{{ knp_pagination_render(posts) }}
+		</div>
+	</div>
+
+
+{% endblock %}
