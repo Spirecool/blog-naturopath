@@ -1,0 +1,11 @@
+	<div class="mb-5">
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ absolute_url(path('app_post_show', {slug: post.slug})) }}" class="share facebook">
+		<i class="fa-brands fa-facebook fa-xl"></i>
+	</a>
+	<a href="https://twitter.com/intent/tweet?text={{ post.title|url_encode }}%20{{ absolute_url(path('app_post_show', {slug: post.slug})) }}%20@NomDuCompte>" class="share twitter">
+		<i class="fa-brands fa-twitter fa-xl"></i>
+	</a>
+    </div>
+    
+    
+
