@@ -34,7 +34,6 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('state', '%STATE_PUBLISHED%')
             ->addOrderBy('p.createdAt', 'DESC');
 
-
         if (isset($category)) {
             $data = $data
                 ->join('p.categories', 'c')
@@ -69,14 +68,15 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('state', '%STATE_PUBLISHED%')
             ->addOrderBy('p.createdAt', 'DESC');
 
+         // Search on posts titles
         if (!empty($searchData->q)) {
             $data = $data
-                // ->join('p.tags', 't')
+                ->join('p.tags', 't')
                 ->andWhere('p.title LIKE :q')
-                // ->orWhere('t.name LIKE :q')
+                ->orWhere('t.name LIKE :q')
                 ->setParameter('q', "%{$searchData->q}%");
         }
-
+        
         $data = $data
             ->getQuery()
             ->getResult();

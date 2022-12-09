@@ -24,7 +24,7 @@ class PostController extends AbstractController
         if($form->isSubmitted() && $form->isValid()) {
             $searchData->page = $request->query->getInt('page', 1);
             $posts = $postRepository->findBySearch($searchData);
-            
+
             return $this->render('pages/blog/index.html.twig', [
                 'form' => $form->createView(),
                 'posts' => $posts
