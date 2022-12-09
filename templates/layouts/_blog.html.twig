@@ -8,6 +8,10 @@
 
 	<h1 class="mb-5 text-center">{{ title }}</h1>
 
+	{% include "/components/_searchData.html.twig" with { 
+		form: form
+	} %}
+
 	<div class="mb-5 text-end">
 
 		{% if allCategories is defined %}

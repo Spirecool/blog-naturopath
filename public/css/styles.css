@@ -17,10 +17,7 @@
 /* 2 - GENERAL STYLES  */
 /***********************/
 
-body {
-  /* To fix footer in the bottom  */
-  position: relative;
-}
+
 
 a {
   text-decoration: none;
@@ -34,7 +31,7 @@ a:hover {
 }
 
 section {
-  margin-top: 70px
+  margin-top: 80px
 }
 
 h1 {
