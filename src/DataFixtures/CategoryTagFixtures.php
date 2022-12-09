@@ -2,24 +2,27 @@
 
 namespace App\DataFixtures;
 
-use Faker\Factory;
 use App\Entity\Post\Category;
+use App\Entity\Post\Tag;
 use App\Repository\Post\PostRepository;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
-class CategoryFixtures extends Fixture implements DependentFixtureInterface
+class CategoryTagFixtures extends Fixture implements DependentFixtureInterface
 {
-    //on fait un construct pour récupérer le postRepository
-    public function __construct(private PostRepository $postRepository)
-    {
+    public function __construct(
+        private PostRepository $postRepository
+    ) {
     }
 
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
+        $posts = $this->postRepository->findAll();
 
+        // Categories Fixtures
         $categories = [];
         for ($i = 0; $i < 10; $i++) {
             $category = new Category();
@@ -32,12 +35,31 @@ class CategoryFixtures extends Fixture implements DependentFixtureInterface
             $categories[] = $category;
         }
 
-        $posts = $this->postRepository->findAll();
-
         foreach ($posts as $post) {
             for ($i = 0; $i < mt_rand(1, 5); $i++) {
                 $post->addCategory(
                     $categories[mt_rand(0, count($categories) - 1)]
+                );
+            }
+        }
+
+        // Tags fixtures
+        $tags = [];
+        for ($i = 0; $i < 10; $i++) {
+            $tag = new Tag();
+            $tag->setName($faker->words(1, true) . ' ' . $i)
+                ->setDescription(
+                    mt_rand(0, 1) === 1 ? $faker->realText(254) : null
+                );
+
+            $manager->persist($tag);
+            $tags[] = $tag;
+        }
+
+        foreach ($posts as $post) {
+            for ($i = 0; $i < mt_rand(1, 5); $i++) {
+                $post->addTag(
+                    $tags[mt_rand(0, count($tags) - 1)]
                 );
             }
         }
