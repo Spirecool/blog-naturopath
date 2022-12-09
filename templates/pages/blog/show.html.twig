@@ -16,7 +16,13 @@
 	<div class="text-center">
 		{% include "components/_share.html.twig" %}
 	</div>
-	<div class="mb-3">
+	
+	<button class="btn btn-light my-4 border">
+		<a href="{{ path('app_post_index') }}">
+			Retourner au blog
+		</a>
+	</button>
+	<div class="d-flex flex-wrap mb-5">
 		{% include "components/_badges.html.twig" with { badges: post.categories } only %}
 	</div>
 	{% if post.thumbnail %}
@@ -28,11 +34,21 @@
 		{{ post.updatedAt|date('d/m/Y') }}
 	</p>
 
-	<button class="btn btn-primary mt-4">
-		<a href="{{ path('app_post_index') }}">
-			Retourner au blog
-		</a>
-	</button>
+	<div class="d-flex flex-row mt-5">
+		
+				<p class="fst-italic">Étiquettes: </p>
+				
+		<ul class="d-flex flex-wrap">
+				{% for tag in post.tags %}
+					<li>
+						<a href="{{ path('app_tag_index', {slug: tag.slug}) }}">{{ tag.name }}</a>
 
+						{% if not loop.last %}
+							<span>&nbsp; - &nbsp;</span>
+						{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
 
 {% endblock %}
