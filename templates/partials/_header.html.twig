@@ -29,16 +29,17 @@
 
 		{# <li><a href="#" class="cart" ><i class='bx bx-mail-send' ></i></a></li> #}
 		<li>
-			<a href="/connexion" class="cart">
+			<a href="{{ path('app_security_login')}}" class="cart">
 				<i class="fa-regular fa-user" id="icon"></i>
 			</a>
 		</li>
 		{% if app.user %}
 			<li>
-				<a href="/logout" class="cart">
+				<a href="{{ path('app_security_logout') }}" class="cart">
 					<i class="fa-solid fa-arrow-right-from-bracket"></i>
 				</a>
 			</li>
+			<img src="{{ app.user.avatar }}" alt="avatar" class="avatar">
 		{% endif %}
 	</ul>
 
