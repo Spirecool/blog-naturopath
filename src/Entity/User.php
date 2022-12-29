@@ -5,13 +5,16 @@ namespace App\Entity;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity('email', 'Cet e-mail existe déjà au sein de l\'application')]
-class User
+#[ORM\HasLifecycleCallbacks]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue('CUSTOM')]
@@ -20,9 +23,12 @@ class User
     private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private string $avatar; 
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Assert\NotBlank()]
+    #[Assert\Email()]
     private ?string $email;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -32,19 +38,41 @@ class User
     private ?string $firstName = null;
 
     #[ORM\Column(type: 'json')]
+    #[Assert\NotBlank()]
     private array $roles = ['ROLE_USER'];
 
     private ?string $plainPassword = null; 
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private string $password;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $createdAt;
+    #[Assert\NotNull()]
+    private DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
 
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->avatar = 'https://avatars.dicebear.com/api/adventurer/'. $this->email . '.svg';
+    } 
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->avatar = 'https://avatars.dicebear.com/api/adventurer/'. $this->email . '.svg';
+        $this->updatedAt = new \DateTimeImmutable();
+    } 
 
     public function getId(): ?string
     {
@@ -77,16 +105,6 @@ class User
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
     
     public function getRoles(): array
     {
@@ -116,13 +134,17 @@ class User
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
+
+    public function eraseCredentials() : void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+        $this->plainPassword = null;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
     }
 
     public function getLastName() : ?string
