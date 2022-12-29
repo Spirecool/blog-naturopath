@@ -2,38 +2,70 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+#[UniqueEntity('email', 'Cet e-mail existe déjà au sein de l\'application')]
+class User
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\GeneratedValue('CUSTOM')]
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
+    private ?string $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $avatar; 
 
-    #[ORM\Column]
-    private array $roles = [];
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private ?string $email;
 
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $lastName = null;
 
-    public function getId(): ?int
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = ['ROLE_USER'];
+
+    private ?string $plainPassword = null; 
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $password;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $updatedAt;
+
+
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    
+    public function getAvatar() : string
+    {
+        return $this->avatar;
+    }
+
+
+    public function setAvatar($avatar) : self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -55,9 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
+    
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -74,9 +104,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): string
     {
         return $this->password;
@@ -96,5 +123,65 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getLastName() : ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName) : self
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getFirstName() : ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName) : self
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getPlainPassword() : ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword) : self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    public function getCreatedAt() : \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt) : self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt() : \DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt) : self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 }
