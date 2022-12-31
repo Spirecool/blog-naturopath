@@ -13,10 +13,10 @@
   font-size: 16px;
 }
 
+
 /***********************/
 /* 2 - GENERAL STYLES  */
 /***********************/
-
 
 
 a {
@@ -53,7 +53,7 @@ h1 {
 
 
 /***************/
-/* 4 - HEADER  */
+/* 3 - HEADER  */
 /***************/
 
 header {
@@ -184,7 +184,7 @@ header.sticky {
 }
 
 /***********************/
-/* 12 - RESPONSIVE CSS */
+/* 4 - RESPONSIVE CSS */
 /***********************/
 
 @media (max-width: 1640px) {
@@ -245,9 +245,9 @@ footer {
   background-color: white;
 }
 
-/*********/
-/* CARDS */
-/*********/
+/*************/
+/* 6 - CARDS */
+/*************/
 
 .card {
   padding-left: auto;
@@ -346,7 +346,6 @@ footer {
 .content_box_404 {
   margin-top: -50px;
 }
-
 
 .avatar {
   width: 35px;
